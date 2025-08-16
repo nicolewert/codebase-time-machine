@@ -14,10 +14,12 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as ai from "../ai.js";
+import type * as analysis from "../analysis.js";
 import type * as analysis_sessions from "../analysis_sessions.js";
 import type * as commits from "../commits.js";
 import type * as conversations from "../conversations.js";
 import type * as dashboard from "../dashboard.js";
+import type * as file_changes from "../file_changes.js";
 import type * as files from "../files.js";
 import type * as notes from "../notes.js";
 import type * as repositories from "../repositories.js";
@@ -34,10 +36,12 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   ai: typeof ai;
+  analysis: typeof analysis;
   analysis_sessions: typeof analysis_sessions;
   commits: typeof commits;
   conversations: typeof conversations;
   dashboard: typeof dashboard;
+  file_changes: typeof file_changes;
   files: typeof files;
   notes: typeof notes;
   repositories: typeof repositories;

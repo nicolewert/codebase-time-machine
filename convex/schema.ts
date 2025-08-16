@@ -75,20 +75,63 @@ export default defineSchema({
   files: defineTable({
     repositoryId: v.id("repositories"),
     path: v.string(),
+    name: v.string(),
+    directory: v.string(),
     extension: v.string(),
     firstSeen: v.number(),
     lastModified: v.number(),
     totalChanges: v.number(),
+    changeFrequency: v.number(), // changes per week
     currentSize: v.number(),
     maxComplexity: v.number(),
     avgComplexity: v.number(),
+    cyclomaticComplexity: v.number(),
+    cognitiveComplexity: v.number(),
+    linesOfCode: v.number(),
     primaryAuthors: v.array(v.string()),
+    authorContributions: v.object({}), // Record<author, { commits: number, lines: number, percentage: number }>
+    hotspotScore: v.number(), // combination of complexity and change frequency
+    techDebt: v.number(), // estimated technical debt score
+    riskScore: v.number(), // risk assessment based on complexity and ownership
     isDeleted: v.boolean(),
     language: v.optional(v.string()),
+    parentPath: v.optional(v.string()),
+    depth: v.number(),
+    nodeType: v.union(v.literal("file"), v.literal("directory")),
   }).index('by_repository', ['repositoryId'])
     .index('by_path', ['path'])
+    .index('by_directory', ['directory'])
     .index('by_extension', ['extension'])
-    .index('by_complexity', ['maxComplexity']),
+    .index('by_complexity', ['maxComplexity'])
+    .index('by_hotspot', ['hotspotScore'])
+    .index('by_change_frequency', ['changeFrequency'])
+    .index('by_parent', ['parentPath'])
+    .index('by_depth', ['depth']),
+
+  file_changes: defineTable({
+    fileId: v.id("files"),
+    commitId: v.id("commits"),
+    changeType: v.union(
+      v.literal("added"),
+      v.literal("modified"),
+      v.literal("deleted"),
+      v.literal("renamed"),
+      v.literal("copied")
+    ),
+    linesAdded: v.number(),
+    linesDeleted: v.number(),
+    linesChanged: v.number(),
+    complexityDelta: v.number(),
+    oldPath: v.optional(v.string()),
+    newPath: v.optional(v.string()),
+    timestamp: v.number(),
+    author: v.string(),
+  }).index('by_file', ['fileId'])
+    .index('by_commit', ['commitId'])
+    .index('by_timestamp', ['timestamp'])
+    .index('by_change_type', ['changeType'])
+    .index('by_author', ['author'])
+    .index('by_file_timestamp', ['fileId', 'timestamp']),
 
   conversation_threads: defineTable({
     threadId: v.string(),
