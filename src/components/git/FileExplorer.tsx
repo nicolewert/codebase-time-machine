@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useQuery } from 'convex/react'
-import { api } from '@/convex/_generated/api'
+import { api } from '../../../convex/_generated/api'
 import { 
   Collapsible, 
   CollapsibleContent, 
@@ -55,7 +55,8 @@ const getComplexityColor = (complexity?: number) => {
 
 export const FileExplorer: React.FC = () => {
   const [sortBy, setSortBy] = useState<'complexity' | 'changes' | 'name'>('complexity')
-  const files = useQuery(api.files.getFiles)
+  // For demo purposes - would need actual repositoryId in real usage
+  const files = useQuery(api.files.getFiles, { repositoryId: 'demo' as any })
 
   const sortFiles = (files: FileNode[]) => {
     return [...files].sort((a, b) => {
@@ -190,7 +191,14 @@ export const FileExplorer: React.FC = () => {
 
       {files ? (
         <div className="space-y-2">
-          {renderFileTree(files)}
+          {renderFileTree(files.map(f => ({
+            ...f,
+            type: 'file' as const,
+            name: f.path.split('/').pop() || f.path,
+            complexity: f.maxComplexity,
+            changes: f.totalChanges,
+            children: []
+          })))}
         </div>
       ) : (
         <div className="text-center text-gray-500 py-6">

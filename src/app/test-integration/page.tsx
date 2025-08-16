@@ -60,7 +60,7 @@ export default function IntegrationTestPage() {
           name: 'Test Repository',
           url: 'file:///Users/nicolewert/codebase-time-machine',
           description: 'Integration test repository',
-          status: 'active'
+          status: 'ready'
         })
       })
 

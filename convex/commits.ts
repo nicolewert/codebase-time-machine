@@ -130,3 +130,54 @@ export const deleteCommitsByRepository = mutation({
     return commits.length;
   },
 });
+
+// Q&A related mutations
+export const createQuestion = mutation({
+  args: {
+    repositoryId: v.id("repositories"),
+    query: v.string(),
+    response: v.string(),
+    relevantCommits: v.array(v.id("commits")),
+    relevantFiles: v.array(v.string()),
+    processingTime: v.number(),
+    confidence: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("questions", {
+      ...args,
+      createdAt: Date.now(),
+      upvotes: 0,
+    });
+  },
+});
+
+export const getQuestions = query({
+  args: { 
+    repositoryId: v.id("repositories"),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, { repositoryId, limit = 20 }) => {
+    return await ctx.db
+      .query("questions")
+      .filter(q => q.eq(q.field("repositoryId"), repositoryId))
+      .order("desc")
+      .take(limit);
+  },
+});
+
+export const updateQuestionUpvotes = mutation({
+  args: {
+    questionId: v.id("questions"),
+    increment: v.number(),
+  },
+  handler: async (ctx, { questionId, increment }) => {
+    const question = await ctx.db.get(questionId);
+    if (!question) {
+      throw new Error("Question not found");
+    }
+    
+    await ctx.db.patch(questionId, {
+      upvotes: Math.max(0, question.upvotes + increment),
+    });
+  },
+});

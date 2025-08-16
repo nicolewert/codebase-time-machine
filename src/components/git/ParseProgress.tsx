@@ -80,12 +80,11 @@ export const ParseProgress: React.FC<ParseProgressProps> = ({
 
       <Progress 
         value={progress} 
-        className="w-full mb-4"
-        indicatorClassName={
+        className={`w-full mb-4 ${
           currentPhase === 'error' 
-            ? 'bg-red-500' 
-            : 'bg-blue-500'
-        }
+            ? '[&>[data-state="complete"]]:bg-red-500' 
+            : '[&>[data-state="complete"]]:bg-blue-500'
+        }`}
       />
 
       {errorMessage && currentPhase === 'error' && (

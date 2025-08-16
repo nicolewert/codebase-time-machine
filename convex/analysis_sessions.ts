@@ -105,6 +105,21 @@ export const addAnalysisError = mutation({
   },
 });
 
+export const updateProgress = mutation({
+  args: {
+    sessionId: v.id("analysis_sessions"),
+    commitsProcessed: v.number(),
+    currentPhase: v.union(v.literal("cloning"), v.literal("parsing"), v.literal("ai_analysis"), v.literal("indexing")),
+  },
+  handler: async (ctx, { sessionId, commitsProcessed, currentPhase }) => {
+    return await ctx.db.patch(sessionId, {
+      commitsProcessed,
+      currentPhase,
+      status: "running",
+    });
+  },
+});
+
 export const completeAnalysisSession = mutation({
   args: {
     sessionId: v.id("analysis_sessions"),

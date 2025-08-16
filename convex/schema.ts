@@ -28,6 +28,7 @@ export default defineSchema({
     url: v.string(),
     name: v.string(),
     owner: v.string(),
+    description: v.optional(v.string()),
     clonedAt: v.number(),
     lastAnalyzed: v.number(),
     status: v.union(v.literal("cloning"), v.literal("analyzing"), v.literal("ready"), v.literal("error")),

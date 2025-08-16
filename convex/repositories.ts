@@ -32,12 +32,14 @@ export const create = mutation({
     url: v.string(),
     name: v.string(),
     description: v.optional(v.string()),
-    status: v.optional(v.union(v.literal("cloning"), v.literal("analyzing"), v.literal("ready"), v.literal("error"), v.literal("active"))),
+    owner: v.optional(v.string()),
+    status: v.optional(v.union(v.literal("cloning"), v.literal("analyzing"), v.literal("ready"), v.literal("error"))),
   },
-  handler: async (ctx, { url, name, description, status = "active" }) => {
+  handler: async (ctx, { url, name, description, owner = "unknown", status = "cloning" }) => {
     return await ctx.db.insert("repositories", {
       url,
       name,
+      owner,
       description,
       clonedAt: Date.now(),
       lastAnalyzed: 0,

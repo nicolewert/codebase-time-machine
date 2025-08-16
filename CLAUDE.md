@@ -162,6 +162,10 @@ CONVEX_URL=https://your-deployment.convex.cloud
 # Add additional environment variables here
 # NEXT_PUBLIC_API_URL=
 # API_SECRET_KEY=
+
+# Claude AI Integration
+CLAUDE_API_KEY=your_anthropic_api_key
+CLAUDE_MODEL=claude-3-haiku-20240307  # Recommended Claude model
 ```
 
 ## Deployment
@@ -185,6 +189,7 @@ npx vercel
 9. **Continuous Integration**: Use `pnpm ci-check` for automatic testing with Claude Code
 10. **Complete AI Workflow**: From database to browser automation to deployment, all manageable through Claude Code
 11. **Global MCP Servers**: All MCP servers (Convex, Playwright, Vercel) run globally for zero-configuration setup
+12. **AI Code Intelligence**: Leverage Claude API for semantic commit analysis and repository Q&A
 
 ## Active Theme: Corporate Precision
 
@@ -221,6 +226,71 @@ npx vercel
 - Forms: Precise validation, clear error states
 - Navigation: Structured, logical, breadcrumb-friendly
 - Data displays: Charts, tables, metrics-focused
+
+## Claude AI-Powered Code Intelligence
+
+### Feature Overview: Advanced AI Code Analysis & Q&A
+
+A cutting-edge AI integration leveraging Claude API to transform code understanding and repository navigation:
+
+#### Key Technical Capabilities
+- **Semantic Commit Analysis**: AI-powered insights into code changes
+- **Natural Language Q&A**: Context-aware repository exploration
+- **Intelligent Tagging**: Automated categorization of commits
+- **Complexity Scoring**: Technical difficulty assessment
+- **Batch Processing**: Scalable AI analysis for large repositories
+
+#### Technical Architecture
+- **Backend (Convex)**:
+  - Claude API integration with robust retry mechanism
+  - Configurable rate limiting and error handling
+  - Background batch processing for large repositories
+  - Real-time AI analysis storage
+
+- **AI Analysis Features**:
+  1. **Commit Semantic Analysis**
+     - Generates concise technical summaries
+     - Assigns relevant tags (bugfix, feature, refactor)
+     - Calculates technical complexity score (1-10)
+     - Extracts potential business impact
+
+  2. **Repository Q&A**
+     - Context-aware question answering
+     - Leverages recent commit history
+     - Dynamic confidence scoring
+     - Supports file and commit context filtering
+
+#### Environment Configuration
+```bash
+# Required Environment Variables
+CLAUDE_API_KEY=your_anthropic_api_key
+CLAUDE_MODEL=claude-3-haiku-20240307  # Recommended model
+```
+
+#### Performance & Reliability
+- **Rate Limiting**: Configurable API request management
+- **Retry Mechanism**: Automatic recovery from transient errors
+- **Fallback Handling**: Graceful degradation for API failures
+- **Configurable Tokens**: Managed token usage (default: 1024)
+
+#### Demo & Usage
+```bash
+# Access AI-powered repository insights
+/claude-demo
+
+# Demonstrates:
+# 1. Commit semantic analysis
+# 2. Natural language Q&A
+# 3. Confidence-scored responses
+# 4. Batch commit processing
+```
+
+#### Technical Highlights
+- End-to-end type safety (TypeScript)
+- Serverless AI integration with Convex
+- Context-aware AI processing
+- Scalable batch analysis
+- Real-time repository intelligence
 
 ## Repository Cloning Pipeline
 

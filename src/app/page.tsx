@@ -19,11 +19,11 @@ export default function Home() {
             Perfect for rapid hackathon development.
           </p>
           <div className="flex gap-4 justify-center">
-            <Button size="lg">
-              Get Started
+            <Button size="lg" asChild>
+              <a href="/test-repo">Get Started</a>
             </Button>
-            <Button variant="outline" size="lg">
-              View Components
+            <Button variant="outline" size="lg" asChild>
+              <a href="/claude-demo">Claude AI Demo</a>
             </Button>
           </div>
         </div>
