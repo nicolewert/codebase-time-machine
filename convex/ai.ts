@@ -38,9 +38,9 @@ async function callClaudeAPI(
   system?: string,
   retries = MAX_RETRIES
 ): Promise<string> {
-  const apiKey = process.env.CLAUDE_API_KEY;
+  const apiKey = process.env.CLAUDE_API_KEY || process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    throw new Error("CLAUDE_API_KEY environment variable is not set");
+    throw new Error("CLAUDE_API_KEY or ANTHROPIC_API_KEY environment variable is not set");
   }
 
   const requestBody = {
@@ -218,11 +218,13 @@ Provide analysis in the specified JSON format.`;
 export const askQuestion = action({
   args: {
     repositoryId: v.id("repositories"),
+    threadId: v.optional(v.string()),
     query: v.string(),
     contextCommits: v.optional(v.array(v.id("commits"))),
     contextFiles: v.optional(v.array(v.string())),
+    parentQuestionId: v.optional(v.id("questions")),
   },
-  handler: async (ctx, { repositoryId, query, contextCommits = [], contextFiles = [] }) => {
+  handler: async (ctx, { repositoryId, threadId, query, contextCommits = [], contextFiles = [], parentQuestionId }) => {
     const startTime = Date.now();
     
     try {
@@ -301,16 +303,54 @@ Please provide a helpful answer based on this context.`;
       // Calculate confidence based on context quality
       const confidence = Math.min(0.9, 0.3 + (validCommitDetails.length * 0.1) + (contextFiles.length * 0.05));
 
-      // Store Q&A interaction
-      const questionId: any = await ctx.runMutation(api.commits.createQuestion, {
+      // Build context sources for tracking relevance
+      const contextSources = [
+        ...validCommitDetails.map((commit: any, index: number) => ({
+          type: "commit" as const,
+          reference: commit.message || `Commit ${index + 1}`,
+          relevanceScore: Math.max(0.1, 0.9 - (index * 0.1))
+        })),
+        ...contextFiles.map((file: string, index: number) => ({
+          type: "file" as const,
+          reference: file,
+          relevanceScore: Math.max(0.1, 0.8 - (index * 0.1))
+        }))
+      ];
+
+      // Store user question
+      const userQuestionId: any = await ctx.runMutation(api.conversations.saveQuestion, {
         repositoryId,
+        threadId,
         query,
+        response: "", // User message has no response
+        relevantCommits,
+        relevantFiles: contextFiles,
+        contextSources,
+        processingTime: 0,
+        confidence: 1.0,
+        messageType: "user" as const,
+        parentQuestionId,
+      });
+
+      // Store AI response
+      const questionId: any = await ctx.runMutation(api.conversations.saveQuestion, {
+        repositoryId,
+        threadId,
+        query: "", // AI response has no query
         response,
         relevantCommits,
         relevantFiles: contextFiles,
+        contextSources,
         processingTime: Date.now() - startTime,
         confidence: Math.round(confidence * 100) / 100,
+        messageType: "assistant" as const,
+        parentQuestionId: userQuestionId,
       });
+
+      // Update thread activity if applicable
+      if (threadId) {
+        await ctx.runMutation(api.conversations.updateThreadActivity, { threadId });
+      }
 
       return {
         success: true,

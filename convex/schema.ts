@@ -90,17 +90,37 @@ export default defineSchema({
     .index('by_extension', ['extension'])
     .index('by_complexity', ['maxComplexity']),
 
+  conversation_threads: defineTable({
+    threadId: v.string(),
+    repositoryId: v.id("repositories"),
+    title: v.string(),
+    createdAt: v.number(),
+    lastActivity: v.number(),
+    messageCount: v.number(),
+  }).index('by_repository', ['repositoryId'])
+    .index('by_thread_id', ['threadId'])
+    .index('by_last_activity', ['lastActivity']),
+
   questions: defineTable({
     repositoryId: v.id("repositories"),
+    threadId: v.optional(v.string()),
     query: v.string(),
     response: v.string(),
     relevantCommits: v.array(v.id("commits")),
     relevantFiles: v.array(v.string()),
+    contextSources: v.array(v.object({
+      type: v.union(v.literal("commit"), v.literal("file"), v.literal("diff")),
+      reference: v.string(),
+      relevanceScore: v.number(),
+    })),
     createdAt: v.number(),
     upvotes: v.number(),
     processingTime: v.number(),
     confidence: v.number(),
+    messageType: v.union(v.literal("user"), v.literal("assistant")),
+    parentQuestionId: v.optional(v.id("questions")),
   }).index('by_repository', ['repositoryId'])
+    .index('by_thread', ['threadId'])
     .index('by_created_at', ['createdAt'])
     .index('by_confidence', ['confidence']),
 })

@@ -27,6 +27,12 @@ export const getRepositoryByUrl = query({
 });
 
 // Mutations
+export const listRepositories = query({
+  handler: async (ctx) => {
+    return await ctx.db.query("repositories").order("desc").collect();
+  },
+});
+
 export const create = mutation({
   args: { 
     url: v.string(),
@@ -34,8 +40,11 @@ export const create = mutation({
     description: v.optional(v.string()),
     owner: v.optional(v.string()),
     status: v.optional(v.union(v.literal("cloning"), v.literal("analyzing"), v.literal("ready"), v.literal("error"))),
+    totalCommits: v.optional(v.number()),
+    totalFiles: v.optional(v.number()),
+    primaryLanguage: v.optional(v.string()),
   },
-  handler: async (ctx, { url, name, description, owner = "unknown", status = "cloning" }) => {
+  handler: async (ctx, { url, name, description, owner = "unknown", status = "cloning", totalCommits = 0, totalFiles = 0, primaryLanguage }) => {
     return await ctx.db.insert("repositories", {
       url,
       name,
@@ -44,8 +53,9 @@ export const create = mutation({
       clonedAt: Date.now(),
       lastAnalyzed: 0,
       status,
-      totalCommits: 0,
-      totalFiles: 0,
+      totalCommits,
+      totalFiles,
+      primaryLanguage,
     });
   },
 });

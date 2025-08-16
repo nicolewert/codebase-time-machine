@@ -69,6 +69,30 @@ export const getCommitsByAuthor = query({
 });
 
 // Mutations
+export const create = mutation({
+  args: {
+    repositoryId: v.id("repositories"),
+    sha: v.string(),
+    message: v.string(),
+    author: v.string(),
+    authorEmail: v.string(),
+    date: v.number(),
+    filesChanged: v.array(v.string()),
+    linesAdded: v.number(),
+    linesDeleted: v.number(),
+    tags: v.optional(v.array(v.string())),
+    aiSummary: v.optional(v.string()),
+    businessImpact: v.optional(v.string()),
+    complexityScore: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("commits", {
+      ...args,
+      tags: args.tags || [],
+    });
+  },
+});
+
 export const insertCommit = mutation({
   args: {
     repositoryId: v.id("repositories"),
@@ -135,12 +159,20 @@ export const deleteCommitsByRepository = mutation({
 export const createQuestion = mutation({
   args: {
     repositoryId: v.id("repositories"),
+    threadId: v.optional(v.string()),
     query: v.string(),
     response: v.string(),
     relevantCommits: v.array(v.id("commits")),
     relevantFiles: v.array(v.string()),
+    contextSources: v.array(v.object({
+      type: v.union(v.literal("commit"), v.literal("file"), v.literal("diff")),
+      reference: v.string(),
+      relevanceScore: v.number(),
+    })),
     processingTime: v.number(),
     confidence: v.number(),
+    messageType: v.union(v.literal("user"), v.literal("assistant")),
+    parentQuestionId: v.optional(v.id("questions")),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("questions", {
