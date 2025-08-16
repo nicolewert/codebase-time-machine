@@ -13,7 +13,10 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as analysis_sessions from "../analysis_sessions.js";
+import type * as commits from "../commits.js";
 import type * as notes from "../notes.js";
+import type * as repositories from "../repositories.js";
 import type * as tasks from "../tasks.js";
 import type * as users from "../users.js";
 
@@ -26,7 +29,10 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  analysis_sessions: typeof analysis_sessions;
+  commits: typeof commits;
   notes: typeof notes;
+  repositories: typeof repositories;
   tasks: typeof tasks;
   users: typeof users;
 }>;

@@ -222,6 +222,48 @@ npx vercel
 - Navigation: Structured, logical, breadcrumb-friendly
 - Data displays: Charts, tables, metrics-focused
 
+## Repository Cloning Pipeline
+
+### Feature Overview: Intelligent Git Repository Analyzer
+
+A sophisticated pipeline for cloning, analyzing, and managing Git repositories with enterprise-grade features:
+
+#### Key Technical Capabilities
+- **GitHub API Integration**: Validate repository URLs in real-time
+- **Background Processing**: Non-blocking Git clone operations
+- **Real-time Status Tracking**: Live updates via Convex subscriptions
+- **Comprehensive Analysis**: Metadata extraction, commit history parsing
+
+#### Technical Architecture
+- **Frontend**: 
+  - `RepoInput.tsx`: Type-safe form with GitHub URL validation
+  - `RepoCard.tsx`: Dynamic status display component
+- **Backend**:
+  - Convex serverless functions for repository management
+  - Background job processing with progress tracking
+- **State Management**: 
+  - Real-time repository status via Convex subscriptions
+  - Granular error handling and recovery mechanisms
+
+#### Demo & Testing
+```bash
+# Navigate to repository test page
+/test-repo
+
+# Demonstrates:
+# 1. URL input validation
+# 2. Background cloning process
+# 3. Real-time status updates
+# 4. Repository metadata display
+```
+
+#### Technical Highlights
+- End-to-end type safety (TypeScript)
+- Non-blocking asynchronous processing
+- Reactive UI with real-time updates
+- Robust error handling
+- GitHub API integration
+
 ## License
 
 MIT License - feel free to use this template for your hackathon projects!
