@@ -16,6 +16,7 @@ import type {
 import type * as ai from "../ai.js";
 import type * as analysis_sessions from "../analysis_sessions.js";
 import type * as commits from "../commits.js";
+import type * as dashboard from "../dashboard.js";
 import type * as files from "../files.js";
 import type * as notes from "../notes.js";
 import type * as repositories from "../repositories.js";
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   ai: typeof ai;
   analysis_sessions: typeof analysis_sessions;
   commits: typeof commits;
+  dashboard: typeof dashboard;
   files: typeof files;
   notes: typeof notes;
   repositories: typeof repositories;

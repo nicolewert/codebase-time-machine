@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { TaskList } from "@/components/TaskList"
+import Link from "next/link"
 
 export default function Home() {
   return (
@@ -21,6 +22,9 @@ export default function Home() {
           <div className="flex gap-4 justify-center">
             <Button size="lg" asChild>
               <a href="/test-repo">Get Started</a>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <Link href="/dashboard">Dashboard</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
               <a href="/claude-demo">Claude AI Demo</a>
