@@ -27,6 +27,27 @@ export const getRepositoryByUrl = query({
 });
 
 // Mutations
+export const create = mutation({
+  args: { 
+    url: v.string(),
+    name: v.string(),
+    description: v.optional(v.string()),
+    status: v.optional(v.union(v.literal("cloning"), v.literal("analyzing"), v.literal("ready"), v.literal("error"), v.literal("active"))),
+  },
+  handler: async (ctx, { url, name, description, status = "active" }) => {
+    return await ctx.db.insert("repositories", {
+      url,
+      name,
+      description,
+      clonedAt: Date.now(),
+      lastAnalyzed: 0,
+      status,
+      totalCommits: 0,
+      totalFiles: 0,
+    });
+  },
+});
+
 export const addRepository = mutation({
   args: { 
     url: v.string(),

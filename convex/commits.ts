@@ -6,15 +6,31 @@ export const getCommits = query({
   args: { 
     repositoryId: v.id("repositories"),
     limit: v.optional(v.number()),
-    offset: v.optional(v.number()),
+    cursor: v.optional(v.string()),
+    author: v.optional(v.string()),
+    dateFrom: v.optional(v.number()),
+    dateTo: v.optional(v.number()),
   },
-  handler: async (ctx, { repositoryId, limit = 50, offset = 0 }) => {
-    return await ctx.db
+  handler: async (ctx, { repositoryId, limit = 50, cursor, author, dateFrom, dateTo }) => {
+    let query = ctx.db
       .query("commits")
-      .filter(q => q.eq(q.field("repositoryId"), repositoryId))
+      .filter(q => q.eq(q.field("repositoryId"), repositoryId));
+
+    if (author) {
+      query = query.filter(q => q.eq(q.field("author"), author));
+    }
+
+    if (dateFrom) {
+      query = query.filter(q => q.gte(q.field("date"), dateFrom));
+    }
+
+    if (dateTo) {
+      query = query.filter(q => q.lte(q.field("date"), dateTo));
+    }
+
+    return await query
       .order("desc")
-      .paginate({ numItems: limit, cursor: null })
-      .then(result => result.page);
+      .paginate({ numItems: limit, cursor: cursor || null });
   },
 });
 
